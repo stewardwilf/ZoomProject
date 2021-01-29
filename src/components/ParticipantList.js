@@ -96,7 +96,7 @@ export const ParticipantList = () => {
     const Selector = () => {
         return (
             <List divided>
-                {participantsData.map((person) =>
+                {participantsData?.map((person) =>
 
                     <List.Item key={person.userId}>
                         <div className='left'>

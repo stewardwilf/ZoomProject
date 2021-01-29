@@ -31,7 +31,7 @@ export const muteIndiv = (id, bool) => {
 }
 
 export const rename = (id, oldname, newname) => {
-    console.log('renaming: ',oldname,' as: ',newname)
+    console.log('renaming: ', oldname, ' as: ', newname)
     ZoomMtg.rename({
         userId: id,
         oldName: oldname,
@@ -40,14 +40,23 @@ export const rename = (id, oldname, newname) => {
 }
 export const Zoom = () => {
     const [settings, setSettings] = useState({ 'meetingNumber': '', 'password': '', 'userName': '' });
-    const [, setLiveP] = useRecoilState(liveParticipants);
+    const [liveP, setLiveP] = useRecoilState(liveParticipants);
 
     const accessParticipants = () => {
-
+        console.log('hb')
         ZoomMtg.getAttendeeslist({
+
+
             success: function (res) {
-                setLiveP(res.result.attendeesList)
-                console.log('access', res)
+                if (JSON.stringify(liveP) === JSON.stringify(res.result.attendeesList)) {
+                    console.log('no change')
+                }
+                else {
+                    console.log(res.result.attendeesList, liveP)
+
+                    setLiveP(res.result.attendeesList)
+                    console.log('change')
+                }
             }
         })
     }
