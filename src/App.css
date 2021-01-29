@@ -1,0 +1,98 @@
+#zmmtg-root, .meeting-client, .meeting-client-inner{
+  margin-top:200px !important;
+  height:80%;
+}
+
+Button{padding:5px;}
+
+div.ui.column.grid{
+  margin:5px !important;
+  width: 45vw !important;
+  min-height: 25vw;
+  height: auto;
+  border:1px solid black;
+}
+
+.draggable-item{
+  border:1px solid black;
+  width:100%;
+}
+.VideoStream{
+  border: 1px solid black;
+  position: relative;
+  width: 70%;
+  padding-top: 70%; /* 1:1 Aspect Ratio */
+  margin-left:15%;
+  margin-right:15%;
+  margin-top:15%;
+  margin-bottom:30%;
+}
+
+.column{
+  border: 1px solid black;
+  padding:0px !important;
+  width:100%; 
+  
+}
+
+.container{width: 100% !important;}
+.PreviewBox{border:1px solid black}
+.PreviewFooter{
+  position:absolute;
+  width: 100%;
+  display: block;
+  background:lightgray;
+  border: 1px solid black;
+  bottom:0;
+  padding:5px;
+}
+.ParticipantContainer{
+  width: 30%;
+  border:1px solid black;
+  float: right;
+  height:43vw;
+  margin: 5px;
+}
+.Participants {
+  border:1px solid black;
+  margin:5px;
+  padding:5px;
+  overflow-y: scroll;
+  height:39vw;
+}
+
+.Header{
+  text-align: center;
+  vertical-align: middle;
+  background-color: lightgray;
+  border: 1px solid black;
+  height:50px;
+  padding: 5px;
+}
+
+.SearchBar {
+  padding:5px;
+}
+
+.Footer{
+  clear: both;
+  bottom:0;
+  text-align: center;
+  vertical-align: middle;
+  background-color: lightgray;
+  width: 100%;
+  padding:5px; 
+}
+
+.right{
+  float:right;
+}
+.center{
+  float:right;
+  margin-right: 45%;
+}
+.left{
+  float:left;
+}
+
+.blackborder{border:1px solid black}
