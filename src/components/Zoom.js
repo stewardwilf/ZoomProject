@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRecoilState } from 'recoil'
 import { liveParticipants } from '../data/liveParticipants'
 import { Button } from 'semantic-ui-react'
+import Heartbeat from 'react-heartbeat';
 
 declare var ZoomMtg
 
@@ -141,8 +142,9 @@ export const Zoom = () => {
                         <Form.Button content='Submit' />
                     </Form.Group>
                 </Form>
-                <Button onClick={accessParticipants}>Update Participant</Button>
-               
+
+                <Heartbeat heartbeatFunction={accessParticipants} heartbeatInterval={1000} />
+
             </main>
         </div>
     );
