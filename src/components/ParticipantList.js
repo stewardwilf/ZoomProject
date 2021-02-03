@@ -1,25 +1,40 @@
-import React, { useState, useEffect } from 'react'
-import { Button, Icon, Input, Form, List } from 'semantic-ui-react'
+import { displayed } from '../data/displayedParticipants';
+import { Participant } from './Participant';
+import './participant.css';
+import React, { useState } from 'react'
+import { Button, Icon } from 'semantic-ui-react'
 import { useRecoilState } from 'recoil'
 import { Container, Draggable } from 'react-smooth-dnd';
 import { selected as selectedp } from '../data/selected'
-import { muteIndiv, rename } from './Zoom'
-import { displayed } from '../data/displayedParticipants'
+import { rename } from './Zoom'
 
 export const ParticipantList = () => {
-    const [selected, setSelected] = useRecoilState(selectedp);
+    const [editingId, setEditingId] = useState(-1);
     const [participantsData] = useRecoilState(displayed);
+    const [newName, setNewName] = useState('');
+
+    const [selected, setSelected] = useRecoilState(selectedp);
     const [showSelected, setShowSelected] = useState(false);
 
-    const [editingId, setEditingId] = useState(0)
-    const [oldName, setOldName] = useState('')
-    const [newName, setNewName] = useState('')
+    const renamePerson = () => {
+        //Goes off the assumption editingId is selected at the point of running. You could pass in ID as param.
+        var userObj = participantsData.find(x => x.userId === editingId);
+        (userObj)
+            ?
 
+            rename(userObj.userId, userObj.userName, newName)
+            :
+            console.log("User not found. Handle error. Maybe they're clicking save when somehow when editingId is -1 or something or maybe even the person has left the call and is no longer in participantsData")
 
-    useEffect(() => {
-        console.log('editingId Change', editingId, oldName, newName)
-    }, [editingId]
-    );
+        setEditingId(-1);
+        setNewName('');
+    }
+
+    const handleSetEditId = (newId) => {
+        (editingId !== newId) ? setEditingId(newId) : setEditingId(-1);
+        //So it doesnt carry over from previous incomplete edit
+        setNewName('');
+    }
 
     const select = (name) => { //select individuals from list
         if ((selected.filter((item) => item.userId === name.userId)).length < 1) {
@@ -36,105 +51,6 @@ export const ParticipantList = () => {
         copy.splice(event.addedIndex, 0, selected[event.removedIndex]); //add removed item to new position
         setSelected(copy)
     }
-
-    const Selected = () => {
-        return (
-            <Button.Group fluid basic vertical className='ParticipantButtons'>
-                <Container dragHandleSelector=".column-drag-handle" onDrop={e => reorderSelection(e)}>
-                    {selected.map((p) => {
-                        return (
-                            <Draggable key={p.userId}>
-                                <Button className="draggable-item" active={true}>
-                                    <span className="column-drag-handle">
-                                        <div className='left'>
-                                            <Icon name='edit' />
-                                            {p.userName}
-                                        </div>
-                                        <div className='right'>
-                                            <Icon name={p.muted ? 'mute' : 'unmute'} />
-                                        &#x2630;
-                                    </div>
-                                    </span>
-                                </Button>
-                            </Draggable>
-                        );
-                    })}
-                </Container>
-            </Button.Group>
-        )
-    }
-
-    const resetEditingFields = () => {
-        setEditingId(0);
-        setNewName('');
-        setOldName('');
-    }
-    const sendDataOffToZoom = () => {
-        rename(editingId, oldName, newName);
-        resetEditingFields();
-    }
-
-    const setData = (person) => {
-        resetEditingFields()
-        setEditingId(person.userId)
-        setOldName(person.userName)
-    }
-
-    const InputForm = (person) => {
-        return (
-            <Form onSubmit={() => sendDataOffToZoom()}>
-                <Form.Group>
-                    <Form.Input
-                        key={'key' + person.userId}
-                        onChange={(e) => setNewName(e.target.value)}
-                        value={newName}
-                    />
-                    <Form.Button content='Submit' />
-                </Form.Group>
-            </Form>)
-    }
-    const Selector = () => {
-        return (
-            <List divided>
-                {participantsData?.map((person) =>
-
-                    <List.Item key={person.userId}>
-                        <div className='left'>
-
-                            <Button icon='edit' onClick={() => setData(person)}></Button>
-                            {parseInt(editingId) === parseInt(person.userId) ?
-                                <InputForm person={person}></InputForm>
-                                : ''
-                            }
-                            {person.userName}
-                        </div>
-                        <div className='right'>
-                            <Button.Group>
-                                <Button
-                                    icon
-                                    onClick={() => { select(person) }}
-                                //active={selected.filter((item) => item.userId === person.userId).length != 0 ? true : false}
-                                >
-                                    <Icon
-                                        name={selected?.filter((sel) => sel.userId === person.userId).length > 0 ? 'remove circle' : 'add circle'} //set to change dynamically
-                                        color={selected?.filter((sel) => sel.userId === person.userId).length > 0 ? 'red' : 'green'}>
-                                    </Icon>
-                                </Button>
-                                <Button icon>
-                                    <Icon
-                                        name={person.muted ? 'mute' : 'unmute'} onClick={() => muteIndiv(person.userId, person.muted ? false : true)}
-                                        color={person.muted ? 'red' : 'green'} onClick={() => muteIndiv(person.userId, person.muted ? false : true)}
-                                    ></Icon>
-                                </Button>
-                            </Button.Group>
-                        </div>
-                    </List.Item>
-
-
-                )}
-            </List>
-        )
-    }
     const show = () => {
         if (showSelected) {
             setShowSelected(false)
@@ -146,11 +62,81 @@ export const ParticipantList = () => {
     const clearSelected = () => {
         setSelected([])
     }
+    const Selected = () => {
+        return (
+            <Container dragHandleSelector=".column-drag-handle" onDrop={e => reorderSelection(e)}>
+                {selected?.map((person) => {
+                    return (
+                        <Draggable key={person.userId}>
+                                <span className="column-drag-handle">
+                                    <div className='participant-container' key={person.userId} >
+                                        <Icon
+                                            name='edit'
+                                            onClick={() => handleSetEditId(person.userId)}>
+                                        </Icon>
+                                        <Participant
+                                            id={person.userId}
+                                            originalName={person.userName}
+                                            muted={person.muted}
+                                            isHost={person.isHost}
+                                            editMode={(editingId === person.userId)}
+                                            newName={newName}
+                                            setNewName={setNewName}
+                                            saveNewName={renamePerson}
+                                        />
+
+
+                                        <Icon
+                                            name={selected?.filter((sel) => sel.userId === person.userId).length > 0 ? 'remove circle' : 'add circle'} //set to change dynamically
+                                            color={selected?.filter((sel) => sel.userId === person.userId).length > 0 ? 'red' : 'green'}
+                                            onClick={() => { select(person) }}>
+                                        </Icon>
+                                        <div className='right'>
+                                        &#x2630;
+                                    </div>
+                                    </div>
+
+                                </span>
+                        </Draggable>
+                    );
+                })}
+            </Container>
+        )
+    }
+
 
     return (
         <>
             <Button onClick={() => show()}>{showSelected ? 'Show All' : 'Show Selected'}</Button>
             {selected.length > 0 ? <Button color='red' onClick={() => clearSelected()}>Clear Selection</Button> : <></>}
-            { showSelected ? <Selected /> : <Selector />}
+            { showSelected ? <Selected /> :
+                participantsData?.map((person) =>
+                    <div className='participant-container' key={person.userId} >
+                        <Icon
+                            name='edit'
+                            onClick={() => handleSetEditId(person.userId)}>
+                        </Icon>
+                        <Participant
+                            id={person.userId}
+                            originalName={person.userName}
+                            muted={person.muted}
+                            isHost={person.isHost}
+                            editMode={(editingId === person.userId)}
+                            newName={newName}
+                            setNewName={setNewName}
+                            saveNewName={renamePerson}
+                        />
+
+
+                        <Icon
+                            name={selected?.filter((sel) => sel.userId === person.userId).length > 0 ? 'remove circle' : 'add circle'} //set to change dynamically
+                            color={selected?.filter((sel) => sel.userId === person.userId).length > 0 ? 'red' : 'green'}
+                            onClick={() => { select(person) }}>
+                        </Icon>
+                    </div>
+                )}
         </>)
+
 }
+
+

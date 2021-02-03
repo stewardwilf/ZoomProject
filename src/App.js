@@ -1,13 +1,13 @@
 import './App.css';
 import { Zoom, Head, Preview, SearchBar, ParticipantList } from './components/index'
+import { useRecoilState } from 'recoil'
+import { meetingStarted as ms } from './data/meetingStarted'
 
 function App() {
+  const [meetingStarted] = useRecoilState(ms)
   return (
     <div className="App">
-    
-      <Zoom></Zoom>
-      
-      <div>
+    {meetingStarted ? <div>
         <Head></Head>
         <Preview></Preview>
 
@@ -17,7 +17,10 @@ function App() {
             <ParticipantList></ParticipantList>
           </div>
         </div>
-      </div>
+      </div> : <Zoom></Zoom>}
+      
+      
+      
     </div>
   )
 }

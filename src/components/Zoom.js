@@ -2,10 +2,8 @@
 import { Form } from 'semantic-ui-react'
 import React, { useState, useEffect } from 'react';
 import { useRecoilState } from 'recoil'
-import { liveParticipants } from '../data/liveParticipants'
-import { Button } from 'semantic-ui-react'
-import Heartbeat from 'react-heartbeat';
-
+import { meetingStarted as ms } from '../data/meetingStarted'
+import {liveParticipants} from '../data/liveParticipants'
 declare var ZoomMtg
 
 ZoomMtg.setZoomJSLib('https://source.zoom.us/1.8.6/lib', '/av');
@@ -13,12 +11,22 @@ ZoomMtg.setZoomJSLib('https://source.zoom.us/1.8.6/lib', '/av');
 ZoomMtg.preLoadWasm();
 ZoomMtg.prepareJssdk();
 
+const zoomMeeting = document.getElementById("zmmtg-root")
+const turnItOff = () => {
+    zoomMeeting.style.display = 'none'
+    zoomMeeting.style.height = '0px'
+    zoomMeeting.style.width = '0px'
+    zoomMeeting.style.position = 'relative'
+    zoomMeeting.style.backgroundColor = 'black'
+    zoomMeeting.style.zIndex = '1'
+}
+
 var meetingNumber = ''
 var password = ''
 var userName = ''
 var signatureEndpoint = 'http://localhost:4000'
 var apiKey = 'IEocUyyPQXCyN1Mnn6ztzg'
-var role = 0
+var role = 1
 var leaveUrl = 'http://localhost:3000'
 var userEmail = ''
 
@@ -31,35 +39,41 @@ export const muteIndiv = (id, bool) => {
 }
 
 export const rename = (id, oldname, newname) => {
-    console.log('renaming: ', oldname, ' as: ', newname)
+    console.log('renaming: ', oldname, ' as: ', newname, 'id', id)
     ZoomMtg.rename({
         userId: id,
         oldName: oldname,
         newName: newname
     });
 }
+
+export const leave = () => {
+
+    ZoomMtg.leaveMeeting({
+        leaveUrl: leaveUrl,
+        success: function (response) {
+            console.log(response);
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    });
+}
+export const accessParticipants = () => {
+    console.log('accessParticipants')
+    let results = null
+    ZoomMtg.getAttendeeslist({
+        success: function (res) {
+            results = res.result.attendeesList
+        }
+    })
+    return (results)
+}
 export const Zoom = () => {
     const [settings, setSettings] = useState({ 'meetingNumber': '', 'password': '', 'userName': '' });
-    const [liveP, setLiveP] = useRecoilState(liveParticipants);
+    const [, setLiveP] = useRecoilState(liveParticipants);
+    const [, setMeetingStarted] = useRecoilState(ms)
 
-    const accessParticipants = () => {
-        console.log('hb')
-        ZoomMtg.getAttendeeslist({
-
-
-            success: function (res) {
-                if (JSON.stringify(liveP) === JSON.stringify(res.result.attendeesList)) {
-                    console.log('no change')
-                }
-                else {
-                    console.log(res.result.attendeesList, liveP)
-
-                    setLiveP(res.result.attendeesList)
-                    console.log('change')
-                }
-            }
-        })
-    }
     useEffect(() => {
         meetingNumber = settings.meetingNumber
         password = settings.password
@@ -86,14 +100,14 @@ export const Zoom = () => {
     }
 
     function startMeeting(signature) {
-        document.getElementById('zmmtg-root').style.display = 'block'
+        turnItOff()
 
         ZoomMtg.init({
             leaveUrl: leaveUrl,
             isSupportAV: true,
             success: (success) => {
                 console.log(success)
-
+                setMeetingStarted(true)
                 ZoomMtg.join({
                     signature: signature,
                     meetingNumber: meetingNumber,
@@ -104,7 +118,6 @@ export const Zoom = () => {
                     success: (success) => {
                         console.log(success)
                     },
-
                     error: (error) => {
                         console.log(error)
                     }
@@ -128,32 +141,27 @@ export const Zoom = () => {
     }
 
     return (
-        <div className="App">
+        <div className="Zoom">
             <main>
-                <h1>Sky Video Conferencing</h1>
-                <Form onSubmit={getSignature}>
-                    <Form.Group>
-                        <Form.Input
-                            placeholder='Meeting Number'
-                            name='meetingNumber'
-                            onChange={handleChange}
-                        />
-                        <Form.Input
-                            placeholder='Meeting Password'
-                            name='password'
-                            onChange={handleChange}
-                        />
-                        <Form.Input
-                            placeholder='Username'
-                            name='userName'
-                            onChange={handleChange}
-                        />
-                        <Form.Button content='Submit' />
-                    </Form.Group>
+                <h1 className='central'>Sky Video Conferencing</h1>
+                <Form onSubmit={getSignature} className='central'>
+                    <Form.Input
+                        placeholder='Meeting Number'
+                        name='meetingNumber'
+                        onChange={handleChange}
+                    />
+                    <Form.Input
+                        placeholder='Meeting Password'
+                        name='password'
+                        onChange={handleChange}
+                    />
+                    <Form.Input
+                        placeholder='Username'
+                        name='userName'
+                        onChange={handleChange}
+                    />
+                    <Form.Button content='Submit' />
                 </Form>
-
-                <Heartbeat heartbeatFunction={accessParticipants} heartbeatInterval={1000} />
-
             </main>
         </div>
     );

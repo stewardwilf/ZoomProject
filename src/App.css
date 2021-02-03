@@ -1,14 +1,60 @@
-#zmmtg-root, .meeting-client, .meeting-client-inner{
-  margin-top:200px !important;
-  height:80%;
+main {
+  width: 70%;
+  margin: auto;
+  text-align: center;
+}
+
+main button {
+  margin-top: 20px;
+  background-color: #2D8CFF;
+  color: #ffffff;
+  text-decoration: none;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 40px;
+  padding-right: 40px;
+  display: inline-block;
+  border-radius: 10px;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+main button:hover {
+  background-color: #2681F2;
+}
+
+
+.Zoom{
+  margin:10px;
+}
+
+#zmmtg-root{
+  margin-top:50px !important;
+  display : none ;
+  height : 0px;
+  width : 0px;
+  position : relative;
+  background-color : black;
+  z-index :1;
+}
+
+.meeting-client, .meeting-client-inner{
+  margin-top:50px;
+  height:96%;
+}
+
+.participant-container{
+  padding:5px;
 }
 
 Button{padding:5px;}
 
 div.ui.column.grid{
   margin:5px !important;
-  width: 45vw !important;
-  min-height: 25vw;
+  width: auto;
+  min-width:700px;
+  min-height: 500px;
   height: auto;
   border:1px solid black;
 }
@@ -32,7 +78,6 @@ div.ui.column.grid{
   border: 1px solid black;
   padding:0px !important;
   width:100%; 
-  
 }
 
 .container{width: 100% !important;}
@@ -50,15 +95,17 @@ div.ui.column.grid{
   width: 30%;
   border:1px solid black;
   float: right;
-  height:43vw;
+  height:85%;
   margin: 5px;
+  min-height: 500px;
 }
 .Participants {
   border:1px solid black;
   margin:5px;
   padding:5px;
   overflow-y: scroll;
-  height:39vw;
+  height:80%;
+  min-height: 500px;
 }
 
 .Header{
@@ -96,3 +143,9 @@ div.ui.column.grid{
 }
 
 .blackborder{border:1px solid black}
+
+.central {
+  margin: auto;
+  width: 25%;
+  padding: 10px;
+}
