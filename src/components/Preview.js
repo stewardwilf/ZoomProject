@@ -1,40 +1,118 @@
-import { Grid, Icon, Button } from 'semantic-ui-react'
+import { Grid, Icon } from 'semantic-ui-react'
 import { useRecoilState } from 'recoil'
 import React, { useEffect, useState } from 'react'
 import { selected } from '../data/selected'
+import { config } from '../data/config'
+import { muteIndiv } from './Zoom'
+import { liveParticipants } from '../data/liveParticipants'
+import { selectedAll } from '../data/selectedAll'
+
 
 export const Preview = () => {
   const [selectedState, setSelected] = useRecoilState(selected);
-  const [wh, setwh] = useState(1);
+  const [wh, setwh] = useState(0);
+  const [cf,] = useRecoilState(config);
+  const [participantsData,] = useRecoilState(liveParticipants);
+  const [selectedAllState, setSelectedAllState] = useRecoilState(selectedAll);
+
+
 
   useEffect(() => { // recalculate number of rows/ columns when selections change
-    setwh((Math.ceil(Math.sqrt(selectedState.length)) ? Math.ceil(Math.sqrt(selectedState.length)) : 1))
-    //let h:number = (Math.ceil(selectedState.length / w) ? Math.ceil(selectedState.length / w) : 1)
-  }, [selectedState]);
+    if (cf) {
+      setwh((Math.ceil(Math.sqrt(selectedState?.length)) ? Math.ceil(Math.sqrt(selectedState?.length)) : 1))
 
-  const removeFromState = (obj) => { //filter out removed item
-    setSelected(selectedState.filter((item) => item.userId !== obj.userId))
-  }
+      let fullSelectedArray = selectedState.map(sel => participantsData?.filter(x => x.userId === sel)[0])
+      setSelectedAllState(fullSelectedArray)
+      //console.log('selected', fullSelectedArray)
+    }
+    //let h:number = (Math.ceil(selectedState.length / w) ? Math.ceil(selectedState.length / w) : 1)
+  }, [selectedState, cf])
+
+  useEffect(() => { // recalculate number of rows/ columns when selections change
+    if (!cf) {
+      setwh((Math.ceil(Math.sqrt(participantsData?.length)) ? Math.ceil(Math.sqrt(participantsData?.length)) : 1))
+    }
+
+    //let h:number = (Math.ceil(selectedState.length / w) ? Math.ceil(selectedState.length / w) : 1)
+  }, [participantsData,cf])
+
+
+  // const removeFromState = (obj) => { //filter out removed item
+  //   setSelected(selectedState.filter((item) => item.userId !== obj.userId))
+  // }
+
+  const pin = (id) => {
+    setSelected([...selectedState, id])
+    // const ap = accessParticipants()
+    // //console.log('aplen',ap.length,'index',index, 'selectedlen',selected.length)
+
+    // const num = ap.length - index 
+    // simulateMouseover(num)
+    // let pinButton = document.querySelector("#wc-container-left > div:nth-child(3) > div > div.speaker-bar-container__horizontal-view-wrap > div:nth-child("+num+") > div > div:nth-child(3) > div > div > ul > li:nth-child(5) > a")
+    // pinButton.click()        
+}
+
+const unpin = (id) => {
+    setSelected([...selectedState.filter(item => item !== id)])
+    // const ap = accessParticipants()
+    // const num = ap?.length - index
+    // simulateMouseover(num)
+    // let pinButton = document.querySelector("#wc-container-left > div:nth-child(3) > div > div.speaker-bar-container__horizontal-view-wrap > div:nth-child("+num+") > div > div:nth-child(3) > div > div > ul > li:nth-child(5) > a")
+    // pinButton.click()
+}
 
   return (
     <>
       <div className='left'>
         <Grid columns={wh}>
-          {selectedState.map((sel) =>
-            <>
-              <Grid.Column padded="false" key={sel.userId}>
-                <Button icon className='right' onClick={() => removeFromState(sel)}>
-                  <Icon name='close' />
-                </Button>
-                <Icon name='bars' size='big' className='left' />
-                <div className='VideoStream'></div>
-                <div className='PreviewFooter'>
-                  <h5 className='left'>{sel.userName} </h5>
-                  <Icon className='right' name={sel.muted ? 'mute' : 'unmute'} />
-                </div>
-              </Grid.Column>
-            </>
-          )}
+
+          {cf ?
+            selectedAllState?.map((sel,idx) =>
+              <>
+                <Grid.Column padded="false" >
+                  <div className='PreviewFooter' key={sel.userId}>
+                    <div className='PreviewFooterContents'>
+                      <p className='left'>{sel.userName} </p>
+                      <Icon
+                        className='right'
+                        name={'map pin'}
+                        onClick={selectedState.find(x => x === sel.userId) ? () => unpin(sel.userId) : () => pin(sel.userId)}
+                        size='large'
+                        color={selectedState.find(x => x === sel.userId) ? 'red' : 'green'}
+                      ></Icon>
+                      <Icon
+                        className='right'
+                        name={sel.muted ? 'mute' : 'unmute'}
+                        color={sel.muted ? 'red' : 'green'}
+                        onClick={() => muteIndiv(sel.userId, sel.muted ? false : true)}
+                        size='large'
+                      ></Icon>
+                    </div>
+                  </div>
+
+                </Grid.Column>
+              </>
+            )
+            :
+            participantsData?.map((sel) =>
+              <>
+
+                <Grid.Column padded="false" >
+                  <div className='PreviewFooter' key={sel.userId}>
+                    <div className='PreviewFooterContents'>
+                      <p className='left'>{sel.userName} </p>
+                      <Icon
+                        className='right'
+                        name={sel.muted ? 'mute' : 'unmute'}
+                        color={sel.muted ? 'red' : 'green'}
+                        onClick={() => muteIndiv(sel.userId, sel.muted ? false : true)}
+                        size='large'
+                      ></Icon>
+                    </div>
+                  </div>
+                </Grid.Column>
+              </>
+            )}
         </Grid>
       </div>
     </>

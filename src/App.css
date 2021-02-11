@@ -4,9 +4,11 @@ main {
   text-align: center;
 }
 
-main button {
+body {background-color: #203647}
+
+ main button {
   margin-top: 20px;
-  background-color: #2D8CFF;
+  background-color: #007CC7;
   color: #ffffff;
   text-decoration: none;
   padding-top: 10px;
@@ -21,16 +23,15 @@ main button {
 }
 
 main button:hover {
-  background-color: #2681F2;
+  background-color: #007CC7;
 }
-
 
 .Zoom{
   margin:10px;
 }
 
 #zmmtg-root{
-  margin-top:50px !important;
+  margin-top:85px !important;
   display : none ;
   height : 0px;
   width : 0px;
@@ -40,64 +41,59 @@ main button:hover {
 }
 
 .meeting-client, .meeting-client-inner{
-  margin-top:50px;
-  height:96%;
+  margin-top:85px;
+  height:95%;
 }
 
 .participant-container{
   padding:5px;
 }
 
-Button{padding:5px;}
-
 div.ui.column.grid{
   margin:5px !important;
-  width: auto;
-  min-width:700px;
-  min-height: 500px;
-  height: auto;
+  min-width: 55vw;
+  min-height: 40vw;
   border:1px solid black;
-}
-
-.draggable-item{
-  border:1px solid black;
-  width:100%;
-}
-.VideoStream{
-  border: 1px solid black;
-  position: relative;
-  width: 70%;
-  padding-top: 70%; /* 1:1 Aspect Ratio */
-  margin-left:15%;
-  margin-right:15%;
-  margin-top:15%;
-  margin-bottom:30%;
+  background-color: #3F3F3F;
 }
 
 .column{
   border: 1px solid black;
-  padding:0px !important;
-  width:100%; 
+  padding:5px !important;
+  background-color: #707070;
 }
 
 .container{width: 100% !important;}
-.PreviewBox{border:1px solid black}
+
 .PreviewFooter{
-  position:absolute;
-  width: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  height:20%;
   display: block;
-  background:lightgray;
+  background:#FFDF6C;
   border: 1px solid black;
-  bottom:0;
   padding:5px;
 }
+
+.PreviewFooterContents{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1vw;
+}
+
 .ParticipantContainer{
   width: 30%;
   border:1px solid black;
   float: right;
-  height:85%;
+  height:auto;
   margin: 5px;
-  min-height: 500px;
+  min-height:40vw;
+  background-color:#707070;
 }
 .Participants {
   border:1px solid black;
@@ -105,22 +101,30 @@ div.ui.column.grid{
   padding:5px;
   overflow-y: scroll;
   height:80%;
-  min-height: 500px;
+  background-color: #3F3F3F;
+  font-size: 1vw;
+  
 }
 
 .Header{
-  text-align: center;
-  vertical-align: middle;
   background-color: lightgray;
   border: 1px solid black;
-  height:50px;
   padding: 5px;
+  margin:5px;
+  height:3vw;
+  overflow:hidden;
+  display:block;
 }
 
 .SearchBar {
   padding:5px;
 }
 
+#root > div > div > header > div.left > button{
+  width:10vw;
+  height:2.5vw;
+  font-size: 0.7vw;
+}
 .Footer{
   clear: both;
   bottom:0;
@@ -138,6 +142,9 @@ div.ui.column.grid{
   float:right;
   margin-right: 45%;
 }
+.center h1{
+  font-size: 1.5vw;
+}
 .left{
   float:left;
 }
@@ -149,3 +156,32 @@ div.ui.column.grid{
   width: 25%;
   padding: 10px;
 }
+
+.participant-container {
+  background-color: #FFDF6C;
+  border-color: darkgrey;
+  border-style: solid;
+  border-width: 1px;
+  min-height: 40px;
+  max-height: 90px;
+  width: 100%;
+  display: flex;
+ 
+}
+
+.participant{
+  
+  overflow: hidden; 
+  width: 90%;
+  display: flex;
+  justify-content: space-between;
+}
+
+
+
+.edit-form{
+  display: flex;
+  flex-direction: column;
+  width: auto;
+}
+

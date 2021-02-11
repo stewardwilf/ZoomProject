@@ -7,9 +7,10 @@ export const SearchBar = () => {
   const [, setDisplayed] = useRecoilState(displayed);
   const [participantsData] = useRecoilState(liveParticipants);
 
-  const source = participantsData
 
   const handleChange = (e) => {
+    const source = participantsData
+
     console.log(source)
 
     console.log('event:',e.target.value)

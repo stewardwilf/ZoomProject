@@ -1,16 +1,17 @@
-
-import { Form } from 'semantic-ui-react'
+//imports
+import { Form, Radio } from 'semantic-ui-react'
 import React, { useState, useEffect } from 'react';
 import { useRecoilState } from 'recoil'
 import { meetingStarted as ms } from '../data/meetingStarted'
-import {liveParticipants} from '../data/liveParticipants'
+import { config } from '../data/config'
+
+// declare zoommtg inst and config
 declare var ZoomMtg
-
-ZoomMtg.setZoomJSLib('https://source.zoom.us/1.8.6/lib', '/av');
-
+ZoomMtg.setZoomJSLib('https://source.zoom.us/1.9.0/lib', '/av');
 ZoomMtg.preLoadWasm();
 ZoomMtg.prepareJssdk();
 
+//set zmmtg-root as hidden by default
 const zoomMeeting = document.getElementById("zmmtg-root")
 const turnItOff = () => {
     zoomMeeting.style.display = 'none'
@@ -21,6 +22,7 @@ const turnItOff = () => {
     zoomMeeting.style.zIndex = '1'
 }
 
+//meeting config
 var meetingNumber = ''
 var password = ''
 var userName = ''
@@ -30,6 +32,7 @@ var role = 1
 var leaveUrl = 'http://localhost:3000'
 var userEmail = ''
 
+//export zoom specific functions
 export const muteIndiv = (id, bool) => {
     console.log('Muting', id)
     ZoomMtg.mute({
@@ -60,7 +63,6 @@ export const leave = () => {
     });
 }
 export const accessParticipants = () => {
-    console.log('accessParticipants')
     let results = null
     ZoomMtg.getAttendeeslist({
         success: function (res) {
@@ -69,10 +71,12 @@ export const accessParticipants = () => {
     })
     return (results)
 }
+
+//zoom component
 export const Zoom = () => {
     const [settings, setSettings] = useState({ 'meetingNumber': '', 'password': '', 'userName': '' });
-    const [, setLiveP] = useRecoilState(liveParticipants);
     const [, setMeetingStarted] = useRecoilState(ms)
+    const [cf, setCF] = useRecoilState(config)
 
     useEffect(() => {
         meetingNumber = settings.meetingNumber
@@ -81,6 +85,7 @@ export const Zoom = () => {
     }, [settings]
     );
 
+    //get signature from localhost4000
     function getSignature(e) {
         e.preventDefault();
 
@@ -99,6 +104,7 @@ export const Zoom = () => {
             })
     }
 
+    //init and join meeting
     function startMeeting(signature) {
         turnItOff()
 
@@ -132,14 +138,10 @@ export const Zoom = () => {
     const handleChange = (e, { name, value }) => {
         setSettings({ ...settings, [name]: value })
     }
-
-    const muteAll = () => {
-        console.log('Mute all')
-        ZoomMtg.muteAll({
-            muteAll: true
-        });
+    const handleChangeR = (bool) => {
+        setCF(bool)
     }
-
+    //return JSX to handle meeting number/ password/ username and start meeting
     return (
         <div className="Zoom">
             <main>
@@ -160,6 +162,24 @@ export const Zoom = () => {
                         name='userName'
                         onChange={handleChange}
                     />
+                    <Form.Field>
+                        <Radio
+                            label='Pin Selector'
+                            name='radioGroup'
+                            value='this'
+                            checked={cf}
+                            onChange={()=>handleChangeR(true)}
+                        />
+                    </Form.Field>
+                    <Form.Field>
+                        <Radio
+                            label='Grid View'
+                            name='radioGroup'
+                            value='that'
+                            checked={!cf}
+                            onChange={()=>handleChangeR(false)}
+                        />
+                    </Form.Field>
                     <Form.Button content='Submit' />
                 </Form>
             </main>
