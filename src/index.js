@@ -1,11 +1,13 @@
+//libraries/css
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import 'semantic-ui-css/semantic.min.css'
 import { RecoilRoot } from "recoil";
+import reportWebVitals from './reportWebVitals';
+import './index.css';
+import 'semantic-ui-css/semantic.min.css';
 
+//components/ functions
+import App from './App';
 
 ReactDOM.render(
    <RecoilRoot>

@@ -1,18 +1,23 @@
+//libraries/ css
 import { Button } from 'semantic-ui-react';
-import { leave, accessParticipants } from './Zoom'
-import { liveParticipants } from '../data/liveParticipants'
-import { useRecoilState } from 'recoil'
-import { useRef, useEffect, useState } from 'react'
-import { selectedAll } from '../data/selectedAll'
-import { selected as selectedids } from '../data/selected'
-import { config } from '../data/config'
+import { useRecoilState } from 'recoil';
+import { useRef, useEffect, useState } from 'react';
+
+//shared states
+import { selectedIds } from '../data/selectedIds'; //Array of IDs for pinned participants
+import { config } from '../data/config'; //bool - true for pinned, false for grid
+import { selectedParticipants } from '../data/selectedParticipants'; //Array of pinned participant objs
+import { liveParticipants } from '../data/liveParticipants'; //Array of all participants, never filtered
+
+//components/ functions
+import { leave, accessParticipants } from './Zoom';
 
 export const Head = () => {
     const [, setLiveP] = useRecoilState(liveParticipants);
     const [hideSpeakerView, setHideSpeakerView] = useState(false);
     //const [gridViewToggle, setGridViewToggle] = useState(false);
-    const [, setSelectedAllArray] = useRecoilState(selectedAll);
-    const [selected, ] = useRecoilState(selectedids);
+    const [, setSelectedAllArray] = useRecoilState(selectedParticipants);
+    const [selected, ] = useRecoilState(selectedIds);
     const [cf,] = useRecoilState(config);
     //const [displayedP,setDisplayedP] = useRecoilState(displayed);
 

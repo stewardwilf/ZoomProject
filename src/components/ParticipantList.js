@@ -1,24 +1,27 @@
-import { displayed } from '../data/displayedParticipants';
-import { Participant } from './Participant';
+//libraries/css
+import React, { useState } from 'react';
+import { Button, Icon } from 'semantic-ui-react';
+import { useRecoilState } from 'recoil';
 import './participant.css';
-import React, { useState } from 'react'
-import { Button, Icon } from 'semantic-ui-react'
-import { useRecoilState } from 'recoil'
-import { selectedAll } from '../data/selectedAll'
-import { selected as selectedids } from '../data/selected'
 
-import { rename } from './Zoom'
-import { config } from '../data/config'
-//participants-items__buttons
+//shared states
+import { filteredParticipants } from '../data/filteredParticipants'; //Array of all objects - filtered by text entered
+import { selectedParticipants } from '../data/selectedParticipants'; //Array of pinned participant objs
+import { selectedIds } from '../data/selectedIds'; //Array of IDs for pinned participants
+import { config } from '../data/config'; //bool - true for pinned, false for grid
+
+//components/ functions
+import { Participant } from './Participant';
+import { rename } from './Zoom';
 
 export const ParticipantList = () => {
     const [editingId, setEditingId] = useState(-1);
-    const [participantsData] = useRecoilState(displayed);
+    const [participantsData] = useRecoilState(filteredParticipants);
     const [newName, setNewName] = useState('');
     const [cf,] = useRecoilState(config);
-    const [,setSelectedIds ] = useRecoilState(selectedids);
+    const [selectedIDs,setSelectedIds ] = useRecoilState(selectedIds);
 
-    const [selected, setSelected] = useRecoilState(selectedAll);
+    const [selected, setSelected] = useRecoilState(selectedParticipants);
     const [showSelected, setShowSelected] = useState(false);
 
     const renamePerson = () => {
@@ -60,8 +63,17 @@ export const ParticipantList = () => {
         }
     }
     const clearSelected = () => {
+        let removalAllClick
+        if (selectedIDs.length>1){
+            removalAllClick = document.querySelector("#wc-container-left > div.full-screen-icon > div > ul > li:nth-child(6) > a")
+        }
+        else {
+            removalAllClick = document.querySelector("#wc-container-left > div:nth-child(3) > div > div:nth-child(3) > div > div > div > div.video-avatar__group > button")
+        }
+        removalAllClick.click()
         setSelected([])
         setSelectedIds([])
+       
     }
 
 

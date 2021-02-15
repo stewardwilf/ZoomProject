@@ -1,21 +1,23 @@
-import { Grid, Icon } from 'semantic-ui-react'
-import { useRecoilState } from 'recoil'
-import React, { useEffect, useState } from 'react'
-import { selected } from '../data/selected'
-import { config } from '../data/config'
-import { muteIndiv } from './Zoom'
-import { liveParticipants } from '../data/liveParticipants'
-import { selectedAll } from '../data/selectedAll'
+//libraries/css
+import { Grid, Icon } from 'semantic-ui-react';
+import { useRecoilState } from 'recoil';
+import React, { useEffect, useState } from 'react';
 
+//shared states
+import { selectedIds } from '../data/selectedIds'; //Array of IDs for pinned participants
+import { config } from '../data/config'; //bool - true for pinned, false for grid
+import { liveParticipants } from '../data/liveParticipants'; //Array of all participants, never filtered
+import { selectedParticipants } from '../data/selectedParticipants'; //Array of pinned participant objs
+
+//components/ functions
+import { muteIndiv } from './Zoom';
 
 export const Preview = () => {
-  const [selectedState, setSelected] = useRecoilState(selected);
+  const [selectedState, setSelected] = useRecoilState(selectedIds);
   const [wh, setwh] = useState(0);
   const [cf,] = useRecoilState(config);
   const [participantsData,] = useRecoilState(liveParticipants);
-  const [selectedAllState, setSelectedAllState] = useRecoilState(selectedAll);
-
-
+  const [selectedAllState, setSelectedAllState] = useRecoilState(selectedParticipants);
 
   useEffect(() => { // recalculate number of rows/ columns when selections change
     if (cf) {
@@ -70,21 +72,21 @@ const unpin = (id) => {
             selectedAllState?.map((sel,idx) =>
               <>
                 <Grid.Column padded="false" >
-                  <div className='PreviewFooter' key={sel.userId}>
+                  <div className='PreviewFooter' key={sel?.userId}>
                     <div className='PreviewFooterContents'>
-                      <p className='left'>{sel.userName} </p>
+                      <p className='left'>{sel?.userName} </p>
                       <Icon
                         className='right'
                         name={'map pin'}
-                        onClick={selectedState.find(x => x === sel.userId) ? () => unpin(sel.userId) : () => pin(sel.userId)}
+                        onClick={selectedState?.find(x => x === sel?.userId) ? () => unpin(sel?.userId) : () => pin(sel?.userId)}
                         size='large'
-                        color={selectedState.find(x => x === sel.userId) ? 'red' : 'green'}
+                        color={selectedState?.find(x => x === sel?.userId) ? 'red' : 'green'}
                       ></Icon>
                       <Icon
                         className='right'
-                        name={sel.muted ? 'mute' : 'unmute'}
-                        color={sel.muted ? 'red' : 'green'}
-                        onClick={() => muteIndiv(sel.userId, sel.muted ? false : true)}
+                        name={sel?.muted ? 'mute' : 'unmute'}
+                        color={sel?.muted ? 'red' : 'green'}
+                        onClick={() => muteIndiv(sel?.userId, sel?.muted ? false : true)}
                         size='large'
                       ></Icon>
                     </div>

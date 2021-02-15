@@ -26,10 +26,17 @@ main button:hover {
   background-color: #007CC7;
 }
 
-.Zoom{
-  margin:10px;
+.radioButton {
+  color:white !important;
 }
 
+.Zoom{
+  margin:10px;
+  color:white;
+}
+.ui.form.central {
+  background-color:  #707070;
+}
 #zmmtg-root{
   margin-top:85px !important;
   display : none ;
@@ -45,16 +52,13 @@ main button:hover {
   height:95%;
 }
 
-.participant-container{
-  padding:5px;
-}
 
 div.ui.column.grid{
   margin:5px !important;
   min-width: 55vw;
   min-height: 40vw;
   border:1px solid black;
-  background-color: #3F3F3F;
+  background-color: #707070;
 }
 
 .column{
@@ -63,8 +67,8 @@ div.ui.column.grid{
   background-color: #707070;
 }
 
-.container{width: 100% !important;}
-
+.container{width: 100% !important;}    
+.ui.button {margin:5px}
 .PreviewFooter{
   position: absolute;
   top: 50%;
@@ -163,9 +167,10 @@ div.ui.column.grid{
   border-style: solid;
   border-width: 1px;
   min-height: 40px;
-  max-height: 90px;
   width: 100%;
   display: flex;
+  margin:5px;
+  padding:5px;
  
 }
 

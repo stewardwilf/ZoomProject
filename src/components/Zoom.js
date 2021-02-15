@@ -1,9 +1,11 @@
-//imports
-import { Form, Radio } from 'semantic-ui-react'
+//libraries/css
+import { Form, Radio } from 'semantic-ui-react';
 import React, { useState, useEffect } from 'react';
-import { useRecoilState } from 'recoil'
-import { meetingStarted as ms } from '../data/meetingStarted'
-import { config } from '../data/config'
+import { useRecoilState } from 'recoil';
+
+//shared states
+import { meetingStarted as ms } from '../data/meetingStarted'; //bool - true for meeting started, false otherwise. 
+import { config } from '../data/config'; //bool - true for pinned, false for grid
 
 // declare zoommtg inst and config
 declare var ZoomMtg
@@ -164,6 +166,7 @@ export const Zoom = () => {
                     />
                     <Form.Field>
                         <Radio
+                            className='left'
                             label='Pin Selector'
                             name='radioGroup'
                             value='this'
@@ -173,6 +176,7 @@ export const Zoom = () => {
                     </Form.Field>
                     <Form.Field>
                         <Radio
+                            className='left'
                             label='Grid View'
                             name='radioGroup'
                             value='that'
